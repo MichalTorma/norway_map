@@ -1,0 +1,10 @@
+[
+    
+    {
+        "url": "https://ut.no/kart#{%Z}/{%LAT}/{%LON}",
+        "icon": "https://ut.no/favicon.ico",
+        "name": "ut.no",
+        "url_bypass": false
+    }
+   
+]

@@ -1,0 +1,6 @@
+services:
+  norway-map:
+    build: .
+    image: registry.michaltorma.com/norway-map:latest
+    platform: linux/amd64
+    

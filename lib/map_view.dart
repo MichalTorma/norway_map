@@ -13,23 +13,28 @@ class MapView extends StatefulWidget {
   State<MapView> createState() => _MapViewState();
 }
 
-class _MapViewState extends State<MapView> {
+class _MapViewState extends State<MapView>
+    with AutomaticKeepAliveClientMixin<MapView> {
   late WebViewXController webviewController;
   @override
   Widget build(BuildContext context) {
+    var bypass =
+        widget.mapSource.url_bypass ? SourceType.urlBypass : SourceType.url;
     return WebViewX(
       width: double.maxFinite,
       height: double.maxFinite,
+      initialSourceType: bypass,
       initialContent: widget.mapSource
           .getUrl(Provider.of<MapProvider>(context, listen: false).loc),
       onWebViewCreated: (controller) {
         // controller.clearCache();
         webviewController = controller;
+        Provider.of<MapProvider>(context, listen: false).webViewXController =
+            controller;
       },
     );
-    // return WebView(
-    //   initialUrl: widget.mapSource
-    //       .getUrl(Provider.of<MapProvider>(context, listen: false).loc),
-    // );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
