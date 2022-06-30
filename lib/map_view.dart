@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:norway_map/config.dart';
-import 'package:norway_map/map_provider.dart';
+import 'package:flutter_map/flutter_map.dart';
+import "package:latlong2/latlong.dart";
+import 'package:norway_map/crs.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx/webviewx.dart';
 
-class MapView extends StatefulWidget {
-  const MapView({Key? key, required this.mapSource}) : super(key: key);
+class MapView extends StatelessWidget {
+  const MapView({super.key});
 
-  final MapSource mapSource;
-
-  @override
-  State<MapView> createState() => _MapViewState();
-}
-
-class _MapViewState extends State<MapView>
-    with AutomaticKeepAliveClientMixin<MapView> {
-  late WebViewXController webviewController;
   @override
   Widget build(BuildContext context) {
-    var bypass =
-        widget.mapSource.url_bypass ? SourceType.urlBypass : SourceType.url;
-    return WebViewX(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      initialSourceType: bypass,
-      initialContent: widget.mapSource
-          .getUrl(Provider.of<MapProvider>(context, listen: false).loc),
-      onWebViewCreated: (controller) {
-        // controller.clearCache();
-        webviewController = controller;
-        Provider.of<MapProvider>(context, listen: false).webViewXController =
-            controller;
-      },
+    return FlutterMap(
+      mapController: Provider.of<MapController>(context, listen: false),
+      options: MapOptions(
+        // crs: Proj4Crs.fromFactory(code: code, proj4Projection: proj4Projection),
+        crs: epsg4273(),
+        // crs: Proj4Crs.fromFactory(code: '', proj4Projection: proj4Projection)
+        center: LatLng(61.8377, 8.5684),
+        zoom: 13,
+      ),
+      layers: [
+        TileLayerOptions(
+            wmsOptions: WMSTileLayerOptions(
+          baseUrl: 'https://openwms.statkart.no/skwms1/wms.topo4?',
+          layers: ['topo4_WMS'],
+          version: '1.3.0',
+          format: 'image/jpeg',
+          crs: epsg4273(),
+        )),
+      ],
+      nonRotatedChildren: [
+        AttributionWidget.defaultWidget(
+          source: 'GeoNorge - Norgeskart (CC BY 4.0)',
+          onSourceTapped: null,
+        ),
+      ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
