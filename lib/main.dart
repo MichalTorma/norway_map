@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:norway_map/map_view.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +46,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: const MapView(),
       floatingActionButton: FloatingActionButton(
         mini: true,
-        onPressed: () => {},
+        onPressed: () => Provider.of<MapController>(context, listen: false)
+            .move(LatLng(61.8377, 8.5684), 11),
         child: const Icon(Icons.home),
       ),
     );
